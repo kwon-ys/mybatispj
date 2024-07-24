@@ -14,20 +14,20 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public ICategory findById(Long id) {
-        if (id == null || id <= 0){
+        if (id == null || id <= 0) {
             return null;
         }
-        Optional<CategoryEntity> find = this.categoryMybatisMapper.findById(id);
-        return find.orElse(null);
+        CategoryDto dto = this.categoryMybatisMapper.findById(id);
+        return dto;
     }
 
     @Override
     public ICategory findByName(String name) {
-        if (name == null || name.isEmpty()){
+        if (name == null || name.isEmpty()) {
             return null;
         }
-        Optional<CategoryEntity> find = this.categoryMybatisMapper.findByName(name);
-        return find.orElse(null);
+        CategoryDto find = this.categoryMybatisMapper.findByName(name);
+        return find;
     }
 
     @Override
@@ -38,12 +38,13 @@ public class CategoryServiceImpl implements ICategoryService {
         return list;
     }
 
-    private List<ICategory> getICategoryList(List<CategoryEntity> list) {
+    private List<ICategory> getICategoryList(List<CategoryDto> list) {
         if (list == null || list.size() <= 0) {
             return new ArrayList<>();
         }
-        List<ICategory> result = list.stream()
-                .map(x -> (ICategory)x)
+
+        List<com.kys.mybatispj.category.ICategory> result = list.stream()
+                .map(entity -> (com.kys.mybatispj.category.ICategory) entity)
                 .toList();
         return result;
     }
@@ -54,18 +55,20 @@ public class CategoryServiceImpl implements ICategoryService {
         if (!isValidInsert(category)) {
             return null;
         }
-        CategoryEntity entity = CategoryEntity.builder()
-                .id(0L).name(category.getName()).build();
-        CategoryEntity result = this.categoryMybatisMapper.saveAndFlush(entity);
-        return result;
+        CategoryDto dto = new CategoryDto();
+        dto.copyFields(category);
+        dto.setId(0L);
+        this.categoryMybatisMapper.insert(dto);
+        return dto;
     }
 
-    private boolean isValidInsert(ICategory category) {
-        if (category == null) {
+    private boolean isValidInsert(ICategory dto) {
+        if (dto == null) {
             return false;
-        } else if (category.getName() == null || category.getName().isEmpty()) {
+        } else if (dto.getName() == null || dto.getName().isEmpty()) {
             return false;
         }
+
         return true;
     }
 
@@ -80,21 +83,22 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public ICategory update(Long id, ICategory category) {
+    public ICategory update(Long id, ICategory category) throws Exception {
         ICategory find = this.findById(id);
         if (find == null) {
             return null;
         }
         find.copyFields(category);
-        CategoryEntity result = this.categoryMybatisMapper.saveAndFlush((CategoryEntity) find);
-        return result;
+        this.categoryMybatisMapper.update((CategoryDto) find);
+        return find;
     }
 
     @Override
     public List<ICategory> findAllByNameContains(String name) {
         if (name == null || name.isEmpty()) {
-            return new ArrayList<>();
+            return null;
         }
+
         List<ICategory> list = this.getICategoryList(
                 this.categoryMybatisMapper.findAllByNameContains(name)
         );

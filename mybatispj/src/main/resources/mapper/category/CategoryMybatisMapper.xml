@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="egovframework.example.category.service.impl.CategoryMapper">
+<mapper namespace="com.kys.mybatispj.category.CategoryMybatisMapper">
 
     <insert id="insert" parameterType="CategoryDto" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO category_tbl
@@ -19,11 +19,30 @@
         WHERE ID = #{id}
     </delete>
 
-    <select id="findById" resultMap="com.kys.mybatispj.category.CategoryDto">
+    <select id="findById" resultType="CategoryDto">
         SELECT
             ID, NAME
         FROM category_tbl
         WHERE ID = #{id}
     </select>
 
+    <select id="findByName" resultType="CategoryDto">
+        SELECT id
+             , name
+        FROM category_tbl
+        WHERE NAME = #{name}
+    </select>
+
+    <select id="findAll" resultType="CategoryDto">
+        SELECT id
+             , name
+        FROM category_tbl
+    </select>
+
+    <select id="findAllByNameContains" resultType="CategoryDto">
+        SELECT id
+             , name
+        FROM category_tbl
+        WHERE name like '%${name}%'
+    </select>
 </mapper>
