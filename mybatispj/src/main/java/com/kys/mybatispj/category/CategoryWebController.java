@@ -24,7 +24,7 @@ public class CategoryWebController {
     public String category_old(Model model) {
         try {
             List<ICategory> allList = this.categoryService.getAllList();
-            model.addAttribute("itemList", allList);
+            model.addAttribute("allList", allList);
         } catch (Exception ex) {
             log.error(ex.toString());
         }
@@ -32,16 +32,15 @@ public class CategoryWebController {
     }
 
     @PostMapping("/oldhtml/category_old_act")
-    public String categoryOldAct(@ModelAttribute CategoryDto dto, Model model) {
+    public String categoryOldAct(@ModelAttribute CategoryDto dto) {
         try {
             if (dto == null || dto.getName() == null || dto.getName().isEmpty()) {
                 return "redirect:category_old"; //브라우저 주소를 redirect 한다
             }
             this.categoryService.insert(dto);
-            model.addAttribute("categoryDto", dto);
         } catch (Exception ex) {
             log.error(ex.toString());
-            return "/oldhtml/category_old"; //resources/templates 폴더안의 화면파일
+            return "oldhtml/category_old";  // resources/templates 폴더안의 화면파일
         }
         return "redirect:category_old"; //브라우저 주소를 redirect 한다
     }
@@ -49,11 +48,11 @@ public class CategoryWebController {
     @GetMapping("/oldhtml/category_old_view") //브라우저의 URL 주소
     public String categoryOldView(@RequestParam Long id, Model model) {
         try {
-            ICategory byId = this.categoryService.findById(id);
-            if (byId == null) {
+            ICategory find = this.categoryService.findById(id);
+            if ( find == null ) {
                 return "redirect:category_old";
             }
-            model.addAttribute("categoryDto", byId);
+            model.addAttribute("allList", find);
         } catch (Exception ex) {
             log.error(ex.toString());
         }
