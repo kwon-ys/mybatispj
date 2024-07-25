@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryServiceImpl implements ICategoryService {
+public class CategoryServiceImpl implements ICategoryService<ICategory> {
     @Autowired
     private CategoryMybatisMapper categoryMybatisMapper;
 
@@ -17,8 +17,8 @@ public class CategoryServiceImpl implements ICategoryService {
         if (id == null || id <= 0) {
             return null;
         }
-        CategoryDto dto = this.categoryMybatisMapper.findById(id);
-        return dto;
+        CategoryDto find = this.categoryMybatisMapper.findById(id);
+        return find;
     }
 
     @Override
@@ -42,9 +42,13 @@ public class CategoryServiceImpl implements ICategoryService {
         if (list == null || list.size() <= 0) {
             return new ArrayList<>();
         }
-
-        List<com.kys.mybatispj.category.ICategory> result = list.stream()
-                .map(entity -> (com.kys.mybatispj.category.ICategory) entity)
+        // input : [CategoryDto|CategoryDto|CategoryDto|CategoryDto|CategoryDto]
+//        List<ICategory> result = new ArrayList<>();
+//        for( CategoryDto entity : list ) {
+//            result.add( (ICategory)entity );
+//        }
+        List<ICategory> result = list.stream()
+                .map(entity -> (ICategory)entity)
                 .toList();
         return result;
     }
@@ -62,10 +66,10 @@ public class CategoryServiceImpl implements ICategoryService {
         return dto;
     }
 
-    private boolean isValidInsert(ICategory dto) {
-        if (dto == null) {
+    private boolean isValidInsert(ICategory category) {
+        if ( category == null ) {
             return false;
-        } else if (dto.getName() == null || dto.getName().isEmpty()) {
+        } else if ( category.getName() == null || category.getName().isEmpty() ) {
             return false;
         }
 
@@ -73,7 +77,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public boolean remove(Long id) throws Exception {
+    public Boolean delete(Long id) throws Exception {
         ICategory find = this.findById(id);
         if (find == null) {
             return false;
@@ -94,13 +98,15 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public List<ICategory> findAllByNameContains(String name) {
-        if (name == null || name.isEmpty()) {
-            return null;
+    public List<ICategory> findAllByNameContains(SearchCategoryDto dto) {
+        if ( dto == null ) {
+            //return List.of();
+            return new ArrayList<>();
         }
-
+        dto.setOrderByWord("id DESC");
+        dto.setRowsOnePage(10); // 페이지 마다 10개씩
         List<ICategory> list = this.getICategoryList(
-                this.categoryMybatisMapper.findAllByNameContains(name)
+                this.categoryMybatisMapper.findAllByNameContains(dto)
         );
         return list;
     }
