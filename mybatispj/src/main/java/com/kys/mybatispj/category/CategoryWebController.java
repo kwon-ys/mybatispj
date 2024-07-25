@@ -21,7 +21,7 @@ public class CategoryWebController {
     }
 
     @GetMapping("/oldhtml/category_old") //브라우저의 URL 주소
-    public String category_old(Model model) {
+    public String categoryOld(Model model) {
         try {
             List<ICategory> allList = this.categoryService.getAllList();
             model.addAttribute("allList", allList);
@@ -60,29 +60,37 @@ public class CategoryWebController {
     }
 
     @PostMapping("/oldhtml/category_old_update")
-    public String categoryOldUpdate(@ModelAttribute CategoryDto dto, Model model) {
+    public String categoryOldUpdate(@ModelAttribute CategoryDto dto) {
         try {
             if (dto == null || dto.getId() == null || dto.getName() == null || dto.getName().isEmpty()) {
                 return "redirect:category_old"; //브라우저 주소를 redirect 한다
             }
+            ICategory find = this.categoryService.findById(dto.getId());
+            if(find == null) {
+                return "redirect:category_old";
+            }
             this.categoryService.update(dto.getId(), dto);
         } catch (Exception ex) {
             log.error(ex.toString());
-            return "/oldhtml/category_old"; //resources/templates 폴더안의 화면파일
+            return "redirect:category_old"; //resources/templates 폴더안의 화면파일
         }
         return "redirect:category_old"; //브라우저 주소를 redirect 한다
     }
 
     @GetMapping("/oldhtml/category_old_delete")
-    public String categoryOldDelete(@RequestParam Long id, Model model) { //get 방식에 @RequestParam
+    public String categoryOldDelete(@RequestParam Long id) { //get 방식에 @RequestParam
         try {
-            if (id == null) {
+            if (id == null || id <= 0) {
                 return "redirect:category_old"; //브라우저 주소를 redirect 한다
+            }
+            ICategory find = this.categoryService.findById(id);
+            if(find == null) {
+                return "redirect:category_old";
             }
             this.categoryService.remove(id);
         } catch (Exception ex) {
             log.error(ex.toString());
-            return "/oldhtml/category_old"; //resources/templates 폴더안의 화면파일
+            return "redirect:category_old"; //resources/templates 폴더안의 화면파일
         }
         return "redirect:category_old"; //브라우저 주소를 redirect 한다
     }
