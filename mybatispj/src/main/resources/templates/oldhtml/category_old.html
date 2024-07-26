@@ -6,6 +6,21 @@
     <link rel="stylesheet" href="/mazer/assets/compiled/css/app.css">
     <link rel="stylesheet" href="/mazer/assets/compiled/css/app-dark.css">
     <link rel="stylesheet" href="/mazer/assets/compiled/css/iconly.css">
+    <script language="JavaScript" src="/js/jquery-3.7.1.min.js"></script>
+    <script>
+        //$(document).ready(function(){
+        //    // Jquery 는 html 문서가 로딩이 완료 되면 이 부분을 실행한다.
+        //});
+        $(function(){
+            // jQuery 3.0 버전부터 실행할 기능을 정의해주세요.
+            let totPage = ([[${searchCategoryDto.total}]] + 9) / 10;
+            let searchName = "[[${searchCategoryDto.name}]]";
+            for (let i = 1; i <= totPage; i++) {
+                $("#pageDiv").append(" <a href='category_old?page=" + i +
+                    "&name=" + searchName + "'>[" + i + "]</a> ");
+            }
+        });
+    </script>
 </head>
 <body>
     <form id="form" name="form" method="post" action="/ctweb/oldhtml/category_old_act">
@@ -30,7 +45,10 @@
             </div>
         </div>
     </section>
-    <div>page : [[${searchCategoryDto.page}]], search name = [[${searchCategoryDto.name}]]</div>
+    <div id="pageDiv">
+    </div>
+    [(${pageHtml})]
+    <div>total : [[${searchCategoryDto.total}]], page : [[${searchCategoryDto.page}]], search name = [[${searchCategoryDto.name}]]</div>
     <ul id="categoryList">
         <li>
             <span>id</span>
@@ -46,4 +64,6 @@
         </li>
     </ul>
 </body>
+<script>
+</script>
 </html>
