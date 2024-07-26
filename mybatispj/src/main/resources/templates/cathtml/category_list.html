@@ -49,6 +49,13 @@
             let searchName = "[[${searchCategoryDto.name}]]";
             let currentPage = [[${searchCategoryDto.page}]];
 
+            // 검색 버튼 클릭 이벤트
+            $("#search-btn").click(function(e) {
+                e.preventDefault();
+                let searchName = $("#search-name").val();
+                window.location.href = "category_list?page=" + currentPage + "&name=" + encodeURIComponent(searchName);
+            });
+
             // 이전 버튼 추가
             if (currentPage > 1) {
                 $("#pageDiv").append("<a class='btn btn-outline-primary' id='prevPage' href='category_list?page=" + (currentPage - 1) + "&name=" + searchName + "'>Prev</a>");
@@ -63,13 +70,6 @@
             if (currentPage < totPage) {
                 $("#pageDiv").append("<a class='btn btn-outline-primary' id='nextPage' href='category_list?page=" + (currentPage + 1) + "&name=" + searchName + "'>Next</a>");
             }
-
-            // 검색 버튼 클릭 이벤트
-            $("#search-btn").click(function(e) {
-                e.preventDefault();
-                let searchName = $("#search-name").val();
-                window.location.href = "category_list?page=" + currentPage + "&name=" + encodeURIComponent(searchName);
-            });
 
             // 페이지 로드 시 현재 페이지 강조 표시
             $("#pageDiv a").each(function() {
