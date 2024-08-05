@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>추가 버튼 화면</title>
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/app.css">
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/iconly.css">
+    <script language="JavaScript" src="/js/jquery-3.7.1.min.js"></script>
+    <style>
+        .center-form {
+            margin-top: 60px;
+            text-align: center;
+            transform: scale(2);
+        }
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #435EBE;
+            color: white;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background-color: #435EBE;
+            color: white;
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+        }
+    </style>
+    <script>
+        $(function() {
+            // 추가 버튼 클릭
+            $("#submit-btn").click(function() {
+                if (categoryInsert()) { // categoryInsert 함수에서 true를 반환하면
+                    $("#form").submit(); // 폼 제출
+                }
+            });
+            // 뒤로 가기 버튼 클릭
+            $("#back-btn").click(function() {
+                window.history.back(); // 이전 페이지로 이동
+            });
+        });
+        function categoryInsert() {
+            let name = $("#name").val();
+            let ret = confirm(name + " 추가 하시겠습니까 ?");
+            return ret;
+        }
+    </script>
+</head>
+<body>
+<form id="form" name="form" method="post" action="/catweb/category_insert" class="center-form">
+    <label for="name">이름 : </label><input type="text" id="name" name="name" placeholder="추가할 이름 입력"/>
+</form>
+<div>
+    <button type="submit" id="submit-btn" class="submit-btn">추가</button>
+</div>
+<div>
+    <button type="button" id="back-btn" class="back-btn">뒤로 가기</button>
+</div>
+</body>
+</html>

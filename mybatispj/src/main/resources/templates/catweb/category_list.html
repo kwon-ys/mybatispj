@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>CatWeb Html</title>
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/app.css">
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="/mazer/assets/compiled/css/iconly.css">
+    <script language="JavaScript" src="/js/jquery-3.7.1.min.js"></script>
+    <style>
+        .search-box{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px;
+        }
+        .search-box input {
+            width: 70%;
+            padding: 10px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+        }
+        .selected {
+            background-color: #435EBE;
+            color: white;
+        }
+        .search-btn {
+            background-color: #435EBE;
+            color: white;
+        }
+        .add-btn {
+            padding: 10px 20px;
+            background-color: #435EBE;
+            color: white;
+            float: right;
+            margin-right: 20px;
+        }
+        .center-pageDiv{
+            margin-top: 70px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .ex {
+            margin-bottom: 25px;
+        }
+    </style>
+    <script>
+        $(function(){
+            // 총 페이지 수 계산
+            let totalItems = [[${searchCategoryDto.total}]]; // 전체 항목 수
+            let itemsPerPage = 10; // 페이지당 항목 수
+            let totPage = Math.ceil(totalItems / itemsPerPage); // 총 페이지 수
+            let searchName = "[[${searchCategoryDto.name}]]";
+            let currentPage = [[${searchCategoryDto.page}]];
+
+            // 현재 페이지에 따른 페이지 범위 계산
+            let startPage = Math.floor((currentPage - 1) / 10) * 10 + 1;
+            let endPage = Math.min(startPage + 9, totPage);
+
+            // 이전 버튼 추가
+            if (currentPage > 10) {
+                $("#pageDiv").append("<a class='btn btn-outline-primary' id='prevPage' href='category_list?page=" + (startPage - 10) + "&name=" + searchName + "'>Prev</a>");
+            }
+
+            // 페이지 링크 추가
+            for (let i = startPage; i <= endPage; i++) {
+                $("#pageDiv").append("<a class='btn btn-outline-primary' href='category_list?page=" + i + "&name=" + searchName + "'>[" + i + "]</a> ");
+            }
+
+            // 다음 버튼 추가
+            if (endPage < totPage) {
+                $("#pageDiv").append("<a class='btn btn-outline-primary' id='nextPage' href='category_list?page=" + (endPage + 1) + "&name=" + searchName + "'>Next</a>");
+            }
+
+            // 페이지 로드 시 현재 페이지 강조 표시
+            $("#pageDiv a").each(function() {
+                if ($(this).text().includes("[" + currentPage + "]")) {
+                    $(this).addClass('selected');
+                }
+            });
+
+            // 검색 버튼 클릭 이벤트
+            $("#search-btn").click(function(e) {
+                e.preventDefault();
+                let searchName = $("#search-name").val();
+                window.location.href = "category_list?page=" + currentPage + "&name=" + encodeURIComponent(searchName);
+            });
+
+            // 추가 버튼 클릭 이벤트
+            $("#add-btn").click(function() {
+                window.location.href = "/catweb/category_add";
+            });
+        });
+
+        function categoryInsert() {
+            let name = $("#name").val();
+            let ret = confirm(name + " 추가 하시겠습니까 ?");
+            return ret;
+        }
+    </script>
+
+</head>
+<body>
+<form>
+    <div class="search-box">
+        <label for="search-name">Category List</label>
+        <input type="text" id="search-name" placeholder="검색할 이름 입력" th:value="${searchCategoryDto.name}">
+        <button type="submit" id="search-btn" class="search-btn">검색</button>
+    </div>
+</form>
+<ul id="categoryList">
+    <hr>
+    <li class="ex">
+        <span>id</span>
+        <span> : </span>
+        <span>name</span>
+    </li>
+    <div class="row">
+        <div class="col-12" th:each="node : ${catList}">
+            <div class="card">
+                <a th:href="@{/catweb/category_view(id=${node.id})}">
+                    <div class="card-content">
+                        <li>
+                            <td class="card-body" th:text="${node.id}"></td>
+                            <span> : </span>
+                            <td class="card-text" th:text="${node.name}"></td>
+                        </li>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</ul>
+<form>
+    <div class="add-name">
+        <button type="button" id="add-btn" class="add-btn">추가</button>
+    </div>
+</form>
+<div id="pageDiv" class="center-pageDiv"><hr></div>
+</body>
+<script>
+</script>
+</html>

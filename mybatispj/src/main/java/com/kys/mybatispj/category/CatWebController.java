@@ -42,7 +42,7 @@ public class CatWebController {
             model.addAttribute("error_message", "오류가 발생했습니다. 관리자에게 문의하세요.");
             return "error/error_save";  // resources/templates 폴더안의 화면파일
         }
-        return "cathtml/category_list";  // resources/templates 폴더안의 화면파일
+        return "catweb/category_list";  // resources/templates 폴더안의 화면파일
     }
 
     private String getHtmlPageString(SearchCategoryDto searchCategoryDto) {
@@ -59,7 +59,7 @@ public class CatWebController {
         return sResult.toString();
     }
 
-    @PostMapping("/category_list_act")
+    @PostMapping("/category_add")
     public String categoryListInsert(@ModelAttribute CategoryDto dto, Model model) {
         try {
             if (dto == null || dto.getName() == null || dto.getName().isEmpty()) {
@@ -75,7 +75,7 @@ public class CatWebController {
         return "redirect:category_list?page=1&name=";  // 브라우저 주소를 redirect 한다.
     }
 
-    @GetMapping("/category_list_view") //브라우저의 URL 주소
+    @GetMapping("/category_view") //브라우저의 URL 주소
     public String categoryListView(@RequestParam Long id, Model model) {
         try {
             if ( id == null || id <= 0 ) {
@@ -93,10 +93,10 @@ public class CatWebController {
             model.addAttribute("error_message", "서버 에러입니다. 관리자에게 문의 하세요.");
             return "error/error_save";  // resources/templates 폴더안의 화면파일
         }
-        return "cathtml/category_insert"; //resources/templates 폴더안의 화면파일
+        return "catweb/category_insert"; //resources/templates 폴더안의 화면파일
     }
 
-    @PostMapping("/category_list_update")
+    @PostMapping("/category_update")
     public String categoryListUpdate(@ModelAttribute CategoryDto dto, Model model) {
         try {
             if (dto == null || dto.getId() <= 0 || dto.getName().isEmpty()) {
@@ -117,7 +117,7 @@ public class CatWebController {
         return "redirect:category_list?page=1&name=";
     }
 
-    @GetMapping("/category_list_delete")
+    @GetMapping("/category_ delete")
     public String categoryListDelete(@RequestParam Long id, Model model) { //get 방식에 @RequestParam
         try {
             if (id == null || id <= 0) {
